@@ -1,0 +1,34 @@
+<h2>Prompt to design</h2>
+<p><input type="text" id="prompt"></p>
+<button id="create">Send</button>
+<button id="cancel">Cancel</button>
+<script>
+
+  document.getElementById('create').onclick = () => {
+  parent.postMessage({ pluginMessage: { type: 'process-json', prompt: document.getElementById('prompt').value } }, '*')
+/*
+  const fileInput = document.getElementById('jsonFile');
+  const file = fileInput.files[0];
+  
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const jsonData = JSON.parse(e.target.result);
+      } catch (err) {
+        console.error('Error parsing JSON:', err);
+        alert('Error parsing JSON file. Please make sure it is valid JSON.');
+      }
+    };
+    reader.readAsText(file);
+  } else {
+    alert('Please select a JSON file first');
+  }
+    */
+}
+
+document.getElementById('cancel').onclick = () => {
+  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+}
+
+</script>
