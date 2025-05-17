@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const promptInput = document.getElementById('prompt');
+            const promptValue = promptInput.value;
+
+            console.log(promptValue);
+
+            try {
+                const response = await fetch('http://localhost:8000/prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt: promptValue })
+                });
+
+                const data = await response.json();
+                console.log('Response:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', submitForm);
+        });
+    </script>
+</head>
+<body>
+    <form>
+        <label for="prompt">Enter your prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
