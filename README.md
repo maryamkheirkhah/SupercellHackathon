@@ -15,7 +15,7 @@ All without manually placing elements in Unity's Editor.
 With this tool, a designer or developer can:
 
 1. Prompt an LLM:  
-   _“Create a Diablo-style inventory with 5 rows and 5 columns.”_
+   _“Create a inventory with 5 rows and 5 columns.”_
 
 2. Receive JSON output that describes the UI layout.
 
