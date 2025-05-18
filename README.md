@@ -113,6 +113,10 @@ All objects will be visible, manually placed, and editable in the scene hierarch
 }
 
 ```
+
+<img width="844" alt="Screenshot 2025-05-18 at 9 30 58" src="https://github.com/user-attachments/assets/0730bf7c-529b-42b1-8bc3-e119059ef625" />
+
+
 ## Roadmap
  Add main_menu, HUD, shop support
 
