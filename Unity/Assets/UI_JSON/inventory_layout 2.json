@@ -1,0 +1,26 @@
+{
+  "type": "inventory",
+  "title": "Backpack",
+  "grid": {
+    "columns": 5,
+    "rows": 5,
+    "cell_size": [ 400, 400 ]
+  },
+  "slots": [
+    { "id": "slot_0_0" },
+    { "id": "slot_0_1" },
+    { "id": "slot_0_2" },
+    { "id": "slot_0_3" },
+    { "id": "slot_0_4" },
+    { "id": "slot_1_0" },
+    { "id": "slot_1_1" },
+    { "id": "slot_1_2" },
+    { "id": "slot_1_3" },
+    { "id": "slot_1_4" },
+    { "id": "slot_2_0" },
+    { "id": "slot_2_1" },
+    { "id": "slot_2_2" },
+    { "id": "slot_2_3" },
+    { "id": "slot_2_4" }
+  ]
+}
