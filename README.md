@@ -132,6 +132,11 @@ All objects will be visible, manually placed, and editable in the scene hierarch
 
  Theming support (dark mode, sci-fi, retro)
 
+## Credits
+
+Created by An Phan, Thanh Bui, Cephas Ofori, Maryam Kheirkhah, Oskar Valkamo 
+Built during a hackathon hosted by Supercell
+
 
 
 ## Installation
