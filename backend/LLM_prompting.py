@@ -1,24 +1,8 @@
-# main.py
+# backend.py
 import os
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, ValidationError
 from openai import OpenAI, OpenAIError
-from dotenv import load_dotenv
-load_dotenv()
-
-# ──────────────────────────────────────
-# FastAPI bootstrap + CORS
-# ──────────────────────────────────────
-app = FastAPI(title="Smart-UI Generator")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Wide-open for hackathon ease
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # ──────────────────────────────────────
 # 1. Pydantic data-models (JSON contract)
@@ -59,7 +43,7 @@ class LayoutJSON(BaseModel):
     meta: dict | None = None
     elements: list[Element] | None = None    # ← NOW OPTIONAL
 
-class PromptText(BaseModel):
+class PromptIn(BaseModel):
     prompt: str
 
 # ──────────────────────────────────────
@@ -133,15 +117,11 @@ ASSISTANT (what you should output):
 """
 
 
-# ──────────────────────────────────────
-# 3.  Routes
-# ──────────────────────────────────────
-@app.get("/")
-def read_root():
-    return {"hello": "world"}
-
+# ────────────────────────────────
+# 3.  Endpoint: POST /generate-layout
+# ────────────────────────────────
 @app.post("/prompt", response_model=LayoutJSON)
-async def generate_json_design(payload: PromptText):
+async def generate_json_design(payload: PromptIn):
     """
     POST JSON: { "prompt": "I need a retro 5×8 inventory..." }
     ↳ returns validated LayoutJSON or raises 422 / 502
@@ -175,37 +155,3 @@ async def generate_json_design(payload: PromptText):
     # figma_helper.push_layout(layout)
 
     return layout
-
-@app.post("/figma_plugin")
-def figma_plugin(prompt: PromptText):
-    print(f"prompt text: {prompt.prompt}")
-    return {
-        "frame": {
-            "name": "test",
-            "x": 0,
-            "y": 0,
-            "width": 250,
-            "height": 500,
-            "fills": [{"type": 'SOLID', "color": {"r": 1, "g": 1, "b": 1}}],
-            "children": [
-                {
-                    "type": "rectangle",
-                    "name": "test",
-                    "width": 50,
-                    "height": 50,
-                    "x": 0,
-                    "y": 0,
-                    "fills": [{"type": 'SOLID', "color": {"r": 1, "g": 0.2, "b": 0.9}}],
-                },
-                {
-                    "type": "rectangle",
-                    "name": "test",
-                    "width": 50,
-                    "height": 150,
-                    "x": 100,
-                    "y": 80,
-                    "fills": [{"type": 'SOLID', "color": {"r": 0.5, "g": 1, "b": 1}}],
-                }
-            ]
-        }
-    }

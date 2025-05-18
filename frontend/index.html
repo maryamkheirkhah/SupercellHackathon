@@ -1,45 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Submission</title>
-    <script>
-        async function submitForm(event) {
-            event.preventDefault();
-            
-            const promptInput = document.getElementById('prompt');
-            const promptValue = promptInput.value;
-
-            console.log(promptValue);
-
-            try {
-                const response = await fetch('http://localhost:8000/prompt', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ prompt: promptValue })
-                });
-
-                const data = await response.json();
-                console.log('Response:', data);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.querySelector('form');
-            form.addEventListener('submit', submitForm);
-        });
-    </script>
-</head>
-<body>
-    <form>
-        <label for="prompt">Enter your prompt:</label>
-        <input type="text" id="prompt" name="prompt" required>
-        <button type="submit">Submit</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart-UI Prompt Tester</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 2rem auto;
+      }
+      #responseBox {
+        white-space: pre-wrap;
+        background: #f3f3f3;
+        padding: 1rem;
+        border-radius: 6px;
+      }
+      button[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Smart-UI Generator</h2>
+    <form id="promptForm">
+      <label for="prompt">Enter your prompt:</label><br />
+      <textarea
+        id="prompt"
+        name="prompt"
+        rows="4"
+        style="width: 100%"
+        required
+      ></textarea
+      ><br />
+      <button id="submitBtn" type="submit">Generate JSON</button>
     </form>
-</body>
+
+    <h3>Server response</h3>
+    <div id="responseBox">— nothing yet —</div>
+    <button id="copyBtn" style="margin-top: 0.5rem" hidden>
+      Copy to clipboard
+    </button>
+
+    <script>
+      const form = document.getElementById("promptForm");
+      const promptArea = document.getElementById("prompt");
+      const respBox = document.getElementById("responseBox");
+      const submitBtn = document.getElementById("submitBtn");
+      const copyBtn = document.getElementById("copyBtn");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const promptValue = promptArea.value.trim();
+        if (!promptValue) return;
+
+        submitBtn.disabled = true;
+        respBox.textContent = "⏳ Waiting for backend…";
+
+        try {
+          const res = await fetch("http://localhost:8000/prompt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: promptValue }),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(
+              `HTTP ${res.status}: ${
+                err.detail?.msg || err.detail || res.statusText
+              }`
+            );
+          }
+
+          const data = await res.json();
+          respBox.textContent = JSON.stringify(data, null, 2);
+          copyBtn.hidden = false;
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+            copyBtn.textContent = "✔ Copied!";
+            setTimeout(() => (copyBtn.textContent = "Copy to clipboard"), 1500);
+          };
+        } catch (error) {
+          respBox.textContent = `❌ ${error.message}`;
+          copyBtn.hidden = true;
+          console.error(error);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
 </html>
